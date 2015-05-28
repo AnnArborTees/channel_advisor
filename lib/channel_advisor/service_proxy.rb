@@ -41,7 +41,11 @@ module ChannelAdvisor
             client = self.init_client(options[:developer_key], options[:password])
 
             request_class = service_module.const_get(class_name)
-            request = request_class.new(*args)
+            begin
+              request = request_class.new(*args)
+            rescue ArgumentError
+              request = request_class.new(args.last)
+            end
 
             result = client.send(method_name, request)
             response = result.send(result_method)
